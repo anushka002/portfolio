@@ -8,215 +8,355 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-    <link rel="stylesheet" href="https://assets.vercel.com/raw/upload/v1587415301/fonts/geist-sans/variable/geist-sans-variable.css">
-    <link rel="stylesheet" href="https://assets.vercel.com/raw/upload/v1587415301/fonts/geist-mono/variable/geist-mono-variable.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background-color: #000000;
-            color: #E5E5E5;
-            font-family: "Geist Sans Variable", sans-serif;
-            overflow-x: hidden;
-            min-height: 100vh;
+        :root{
+            --bg:#08090b;
+            --bg-soft:#0c0e11;
+            --surface:#131519;
+            --surface-2:#171a1f;
+            --border:rgba(237,238,240,0.08);
+            --border-soft:rgba(237,238,240,0.05);
+            --border-brass:rgba(201,166,103,0.45);
+            --text:#EDEEF0;
+            --text-muted:#9aa0a8;
+            --text-faint:#5b6067;
+            --brass:#c9a667;
+            --brass-bright:#e8c78e;
+            --brass-dim:rgba(201,166,103,0.10);
+            --brass-glow:rgba(201,166,103,0.22);
+            --serif:'Fraunces', serif;
+            --sans:'Inter', sans-serif;
+            --mono:'IBM Plex Mono', monospace;
         }
-        .starfield-bg {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 0;
-            background-color: #000000;
+        *{margin:0;padding:0;box-sizing:border-box;}
+        html{background:var(--bg);}
+        body{
+            background-color:var(--bg);
+            color:var(--text);
+            font-family:var(--sans);
+            overflow-x:hidden;
+            min-height:100vh;
+            font-weight:400;
+            letter-spacing:0.01em;
         }
-        .starfield-bg::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-image: url('https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?q=80&w=2940&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0.3;
+
+        /* ---------- Background: blueprint grid + vignette (no stock imagery) ---------- */
+        .field-bg{
+            position:fixed; inset:0; z-index:0; background:var(--bg);
+            overflow:hidden;
         }
-        .starfield-bg::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.5) 100%);
+        .field-bg::before{
+            content:'';
+            position:absolute; inset:-2px;
+            background-image:
+                linear-gradient(rgba(237,238,240,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(237,238,240,0.035) 1px, transparent 1px);
+            background-size:64px 64px;
+            mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, black 15%, transparent 75%);
+            -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, black 15%, transparent 75%);
         }
-        .content-wrapper { position: relative; z-index: 10; min-height: 100vh; }
-        .glass-card {
-            background: rgba(20, 20, 20, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 229, 255, 0.15);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
+        .field-bg::after{
+            content:'';
+            position:absolute; inset:0;
+            background:
+                radial-gradient(ellipse 60% 45% at 78% 8%, rgba(201,166,103,0.10) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 50% 100%, rgba(201,166,103,0.05) 0%, transparent 70%);
         }
-        .glass-card:hover {
-            transform: translateY(-4px);
-            border-color: #00E5FF;
-            box-shadow: 0 8px 30px rgba(0, 229, 255, 0.2);
+        .stars{
+            position:absolute; inset:0;
+            background-image:
+                radial-gradient(1px 1px at 20px 30px, rgba(237,238,240,0.5), transparent),
+                radial-gradient(1px 1px at 340px 120px, rgba(237,238,240,0.4), transparent),
+                radial-gradient(1px 1px at 620px 260px, rgba(237,238,240,0.35), transparent),
+                radial-gradient(1px 1px at 180px 420px, rgba(237,238,240,0.3), transparent),
+                radial-gradient(1px 1px at 900px 80px, rgba(201,166,103,0.5), transparent),
+                radial-gradient(1px 1px at 1100px 380px, rgba(237,238,240,0.4), transparent),
+                radial-gradient(1px 1px at 60px 620px, rgba(237,238,240,0.3), transparent),
+                radial-gradient(1px 1px at 760px 560px, rgba(201,166,103,0.4), transparent);
+            background-repeat:repeat;
+            background-size:1200px 800px;
+            opacity:0.6;
         }
-        .btn {
-            padding: 0.65rem 1.5rem;
-            border-radius: 0.625rem;
-            font-weight: 600;
-            font-size: 0.875rem;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
+        .content-wrapper{position:relative; z-index:10; min-height:100vh;}
+
+        ::selection{ background:var(--brass); color:#0a0a0a; }
+
+        /* ---------- Nav ---------- */
+        .navbar{
+            position:fixed; top:0; left:0; width:100%;
+            background:rgba(8,9,11,0.72);
+            backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+            z-index:1000;
+            padding:1.1rem 2rem;
+            display:flex; justify-content:center; flex-wrap:wrap; gap:0.4rem;
+            border-bottom:1px solid var(--border);
         }
-        .btn-primary {
-            background: linear-gradient(135deg, #00E5FF, #00B8D4);
-            color: #000000;
-            box-shadow: 0 3px 12px rgba(0, 229, 255, 0.4);
+        .navbar a{
+            color:var(--text-muted);
+            margin:0 0.95rem;
+            font-family:var(--mono);
+            font-weight:500;
+            font-size:0.7rem;
+            letter-spacing:0.14em;
+            text-transform:uppercase;
+            transition:color 0.3s ease;
+            text-decoration:none;
+            position:relative;
+            padding-bottom:2px;
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 18px rgba(0, 229, 255, 0.6); }
-        .btn-secondary { background-color: transparent; border: 2px solid #E040FB; color: #E040FB; }
-        .btn-secondary:hover { background-color: rgba(224, 64, 251, 0.15); transform: translateY(-2px); }
-        .project-card { transition: all 0.4s ease; }
-        .project-card:hover {
-            transform: translateY(-6px);
-            border-color: #00E5FF;
-            box-shadow: 0 12px 35px rgba(0, 229, 255, 0.3);
+        .navbar a::after{
+            content:'';
+            position:absolute; left:0; bottom:-3px;
+            width:0; height:1px; background:var(--brass);
+            transition:width 0.3s ease;
         }
-        .project-image, .engagement-image {
-            width: 100%;
-            max-height: 180px;
-            object-fit: cover;
-            border-radius: 0.625rem;
-            border: 1px solid rgba(0, 229, 255, 0.2);
-            margin-bottom: 0.875rem;
-            transition: transform 0.3s ease;
+        .navbar a:hover{ color:var(--text); }
+        .navbar a:hover::after{ width:100%; }
+
+        header{ margin-top:64px; }
+
+        /* ---------- Hero ---------- */
+        .eyebrow{
+            font-family:var(--mono);
+            font-size:0.72rem;
+            letter-spacing:0.22em;
+            text-transform:uppercase;
+            color:var(--brass);
+            display:inline-flex;
+            align-items:center;
+            gap:0.6rem;
+        }
+        .eyebrow::before{
+            content:'';
+            width:22px; height:1px; background:var(--brass);
+            display:inline-block;
+        }
+        .hero-name{
+            font-family:var(--serif);
+            font-weight:500;
+            font-size:clamp(2.4rem, 6vw, 4.2rem);
+            line-height:1.02;
+            color:#fff;
+            letter-spacing:-0.01em;
+        }
+        .hero-role{
+            font-family:var(--mono);
+            font-size:1rem;
+            letter-spacing:0.04em;
+            color:var(--brass-bright);
+        }
+
+        /* Orbit portrait */
+        .orbit-wrap{
+            position:relative;
+            width:12.5rem; height:12.5rem;
+        }
+        .orbit-ring{
+            position:absolute; top:50%; left:50%;
+            border-radius:50%;
+            border:1px solid var(--border-brass);
+            transform:translate(-50%,-50%);
+            pointer-events:none;
+        }
+        .orbit-ring.r1{ width:calc(100% + 26px); height:calc(100% + 26px); animation:spin 34s linear infinite; border-style:dashed; }
+        .orbit-ring.r2{ width:calc(100% + 52px); height:calc(100% + 52px); animation:spin 54s linear infinite reverse; border-color:rgba(201,166,103,0.22); }
+        .orbit-dot{
+            position:absolute; top:-3px; left:50%;
+            width:6px; height:6px; border-radius:50%;
+            background:var(--brass-bright);
+            box-shadow:0 0 8px 2px var(--brass-glow);
+            transform:translateX(-50%);
+        }
+        @keyframes spin{ from{ transform:translate(-50%,-50%) rotate(0deg); } to{ transform:translate(-50%,-50%) rotate(360deg); } }
+        .profile-image{
+            width:100%; height:100%;
+            object-fit:cover; object-position:center;
+            border-radius:50%;
+            border:1px solid rgba(237,238,240,0.15);
+            box-shadow:0 0 0 6px var(--bg), 0 20px 50px rgba(0,0,0,0.6);
+            position:relative; z-index:2;
+            transition:filter 0.4s ease;
+        }
+        .orbit-wrap:hover .profile-image{ filter:brightness(1.05); }
+
+        .stat-row{
+            display:flex; flex-wrap:wrap; gap:0 1.6rem;
+            font-family:var(--mono);
+        }
+        .stat{ padding:0.9rem 0; }
+        .stat-num{ color:#fff; font-size:1.15rem; font-weight:600; display:block; }
+        .stat-label{ color:var(--text-faint); font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; }
+        .stat-divider{ width:1px; align-self:stretch; background:var(--border); margin:0.9rem 0; }
+
+        /* ---------- Buttons ---------- */
+        .btn{
+            padding:0.75rem 1.6rem;
+            border-radius:0.3rem;
+            font-family:var(--mono);
+            font-weight:500;
+            font-size:0.75rem;
+            letter-spacing:0.06em;
+            text-transform:uppercase;
+            transition:all 0.3s ease;
+            display:inline-flex; align-items:center; gap:0.55rem;
+            text-decoration:none;
+        }
+        .btn-primary{
+            background:var(--brass);
+            color:#0a0a0a;
+        }
+        .btn-primary:hover{ background:var(--brass-bright); transform:translateY(-2px); box-shadow:0 8px 24px var(--brass-glow); }
+        .btn-secondary{
+            background-color:transparent;
+            border:1px solid var(--border);
+            color:var(--text-muted);
+        }
+        .btn-secondary:hover{ border-color:var(--border-brass); color:#fff; transform:translateY(-2px); }
+
+        /* ---------- Cards ---------- */
+        .glass-card{
+            background:var(--surface);
+            border:1px solid var(--border);
+            border-radius:0.5rem;
+            padding:1.6rem;
+            transition:border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glass-card:hover{
+            transform:translateY(-3px);
+            border-color:var(--border-brass);
+            box-shadow:0 16px 40px rgba(0,0,0,0.45);
+        }
+        .project-card{ transition:all 0.35s ease; }
+        .project-card:hover{ transform:translateY(-4px); border-color:var(--border-brass); box-shadow:0 18px 44px rgba(0,0,0,0.5); }
+
+        .project-image, .engagement-image{
+            width:100%; max-height:180px; object-fit:cover;
+            border-radius:0.35rem;
+            border:1px solid var(--border);
+            margin-bottom:1rem;
+            filter:grayscale(0.15) contrast(1.02);
+            transition:transform 0.4s ease, filter 0.4s ease;
         }
         .project-card:hover .project-image,
-        .project-card:hover .engagement-image { transform: scale(1.02); }
-        .navbar {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%;
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(15px);
-            z-index: 1000;
-            padding: 0.875rem 2rem;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 0.25rem;
-            border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+        .project-card:hover .engagement-image{ transform:scale(1.015); filter:grayscale(0) contrast(1.05); }
+
+        /* ---------- Section titles ---------- */
+        .section-title{
+            font-family:var(--serif);
+            font-style:italic;
+            font-size:clamp(1.7rem, 3.2vw, 2.35rem);
+            font-weight:500;
+            color:#fff;
+            margin-bottom:0.4rem;
+            display:inline-block;
         }
-        .navbar a {
-            color: #E5E5E5;
-            margin: 0 1rem;
-            font-weight: 500;
-            font-size: 0.875rem;
-            transition: color 0.3s ease;
-            text-decoration: none;
+        .section-eyebrow{
+            display:block;
+            font-family:var(--mono);
+            font-size:0.68rem;
+            letter-spacing:0.2em;
+            text-transform:uppercase;
+            color:var(--text-faint);
+            margin-bottom:0.7rem;
         }
-        .navbar a:hover { color: #00E5FF; }
-        header { margin-top: 60px; }
-        .profile-image {
-            width: 11rem; height: 11rem;
-            object-fit: cover; object-position: center;
-            border-radius: 50%;
-            border: 3px solid #00E5FF;
-            box-shadow: 0 0 30px rgba(0, 229, 255, 0.5);
-            transition: transform 0.4s ease;
+        .section-head{ margin-bottom:2.4rem; position:relative; }
+        .section-head::after{
+            content:'';
+            display:block;
+            width:44px; height:1px;
+            background:var(--brass);
+            margin-top:0.9rem;
         }
-        .profile-image:hover { transform: scale(1.05); box-shadow: 0 0 45px rgba(0, 229, 255, 0.7); }
-        .section-title {
-            font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-            font-weight: 700;
-            color: #FFFFFF;
-            margin-bottom: 2rem;
-            position: relative;
-            display: inline-block;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+
+        /* ---------- Carousel ---------- */
+        .carousel-container{ position:relative; overflow:hidden; width:100%; }
+        .carousel{ display:flex; transition:transform 0.5s cubic-bezier(.4,0,.2,1); }
+        .carousel-item{ flex:0 0 100%; padding:0 1rem; box-sizing:border-box; }
+        @media (min-width:640px){ .carousel-item{ flex:0 0 50%; } }
+        @media (min-width:1024px){ .carousel-item{ flex:0 0 33.333%; } }
+        .carousel-button{
+            position:absolute; top:50%; transform:translateY(-50%);
+            background-color:rgba(19,21,25,0.9);
+            color:var(--brass);
+            border:1px solid var(--border-brass);
+            cursor:pointer; z-index:10;
+            transition:all 0.3s ease;
+            border-radius:50%;
+            width:2.75rem; height:2.75rem;
+            display:flex; align-items:center; justify-content:center;
         }
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -8px; left: 0;
-            width: 50px; height: 3px;
-            background: linear-gradient(90deg, #00E5FF, #E040FB);
-            border-radius: 2px;
+        .carousel-button:hover{ background-color:var(--brass); color:#0a0a0a; transform:translateY(-50%) scale(1.08); }
+        .carousel-button.left{ left:0.5rem; }
+        .carousel-button.right{ right:0.5rem; }
+
+        /* ---------- Timeline ---------- */
+        .timeline{ position:relative; max-width:900px; margin:0 auto; padding:2rem 0; }
+        .timeline::before{
+            content:'';
+            position:absolute; left:50%; transform:translateX(-50%);
+            width:1px; height:100%;
+            background:linear-gradient(180deg, rgba(201,166,103,0) 0%, var(--brass) 15%, var(--brass) 85%, rgba(201,166,103,0) 100%);
         }
-        .carousel-container { position: relative; overflow: hidden; width: 100%; }
-        .carousel { display: flex; transition: transform 0.5s ease; }
-        .carousel-item { flex: 0 0 100%; padding: 0 1rem; box-sizing: border-box; }
-        @media (min-width: 640px) { .carousel-item { flex: 0 0 50%; } }
-        @media (min-width: 1024px) { .carousel-item { flex: 0 0 33.333%; } }
-        .carousel-button {
-            position: absolute;
-            top: 50%; transform: translateY(-50%);
-            background-color: rgba(20, 20, 20, 0.9);
-            color: #00E5FF;
-            border: 1px solid #00E5FF;
-            cursor: pointer; z-index: 10;
-            transition: all 0.3s ease;
-            border-radius: 50%;
-            width: 3rem; height: 3rem;
-            display: flex; align-items: center; justify-content: center;
+        .timeline-item{ position:relative; margin-bottom:2rem; width:50%; }
+        .timeline-item.left{ left:0; padding-right:2.5rem; }
+        .timeline-item.right{ left:50%; padding-left:2.5rem; }
+        .timeline-content{
+            padding:1.3rem 1.4rem;
+            background:var(--surface);
+            border-radius:0.4rem;
+            border:1px solid var(--border);
+            transition:all 0.3s ease;
         }
-        .carousel-button:hover { background-color: #00E5FF; color: #000000; transform: translateY(-50%) scale(1.1); }
-        .carousel-button.left { left: 0.5rem; }
-        .carousel-button.right { right: 0.5rem; }
-        .timeline { position: relative; max-width: 900px; margin: 0 auto; padding: 2rem 0; }
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 50%; transform: translateX(-50%);
-            width: 3px; height: 100%;
-            background: linear-gradient(180deg, #00E5FF 0%, #E040FB 50%, #FFEB3B 100%);
+        .timeline-content:hover{ border-color:var(--border-brass); transform:scale(1.015); box-shadow:0 14px 34px rgba(0,0,0,0.4); }
+        .timeline-marker{
+            position:absolute; top:1.6rem;
+            width:9px; height:9px;
+            background:var(--bg);
+            border-radius:50%;
+            border:2px solid var(--brass);
+            box-shadow:0 0 0 4px var(--bg), 0 0 12px 2px var(--brass-glow);
+            z-index:2;
         }
-        .timeline-item { position: relative; margin-bottom: 2rem; width: 50%; }
-        .timeline-item.left { left: 0; padding-right: 2.5rem; }
-        .timeline-item.right { left: 50%; padding-left: 2.5rem; }
-        .timeline-content {
-            padding: 1.25rem;
-            background: rgba(20, 20, 20, 0.85);
-            backdrop-filter: blur(12px);
-            border-radius: 0.875rem;
-            border: 1px solid rgba(0, 229, 255, 0.2);
-            transition: all 0.3s ease;
+        .timeline-item.left .timeline-marker{ right:-5.5px; }
+        .timeline-item.right .timeline-marker{ left:-5.5px; }
+
+        /* ---------- Socials / blog ---------- */
+        .social-link{ color:var(--text-faint); font-size:1.3rem; transition:all 0.3s ease; }
+        .social-link:hover{ color:var(--brass-bright); transform:translateY(-3px); }
+
+        .blog-post{
+            display:block; padding:1.5rem;
+            border-left:2px solid var(--brass);
+            transition:all 0.3s ease;
+            background:var(--surface);
+            border-radius:0 0.4rem 0.4rem 0;
         }
-        .timeline-content:hover { border-color: #00E5FF; transform: scale(1.02); box-shadow: 0 10px 30px rgba(0, 229, 255, 0.25); }
-        .timeline-marker {
-            position: absolute; top: 2rem;
-            width: 18px; height: 18px;
-            background: #00E5FF;
-            border-radius: 50%;
-            border: 3px solid #000000;
-            box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.4);
-            z-index: 2;
+        .blog-post:hover{ background:var(--surface-2); transform:translateX(6px); }
+
+        .tag-date{
+            font-family:var(--mono);
+            font-size:0.68rem;
+            letter-spacing:0.06em;
+            color:var(--brass);
         }
-        .timeline-item.left .timeline-marker { right: -10px; }
-        .timeline-item.right .timeline-marker { left: -10px; }
-        .social-link { color: #A0A0A0; font-size: 1.5rem; transition: all 0.3s ease; }
-        .social-link:hover { color: #00E5FF; transform: translateY(-3px) scale(1.1); }
-        .blog-post {
-            display: block; padding: 1.5rem;
-            border-left: 4px solid #00E5FF;
-            transition: all 0.3s ease;
-            background: rgba(20, 20, 20, 0.6);
-            border-radius: 0.5rem;
-        }
-        .blog-post:hover { background: rgba(0, 229, 255, 0.08); transform: translateX(8px); border-left-color: #E040FB; }
-        @media (max-width: 768px) {
-            .profile-image { width: 9rem; height: 9rem; }
-            .navbar { padding: 0.75rem 1rem; }
-            .navbar a { margin: 0 0.5rem; font-size: 0.8rem; }
-            .timeline::before { left: 20px; }
-            .timeline-item { width: 100%; left: 0 !important; padding-left: 60px !important; padding-right: 0 !important; }
-            .timeline-marker { left: 12px !important; right: auto !important; }
+
+        footer p{ font-family:var(--mono); letter-spacing:0.04em; }
+
+        @media (max-width:768px){
+            .orbit-wrap{ width:9.5rem; height:9.5rem; }
+            .navbar{ padding:0.85rem 1rem; }
+            .navbar a{ margin:0 0.5rem; font-size:0.62rem; }
+            .timeline::before{ left:20px; }
+            .timeline-item{ width:100%; left:0 !important; padding-left:52px !important; padding-right:0 !important; }
+            .timeline-marker{ left:15px !important; right:auto !important; }
         }
     </style>
 </head>
 <body class="antialiased">
-    <div class="starfield-bg"></div>
+    <div class="field-bg"><div class="stars"></div></div>
     <div class="content-wrapper">
         <nav class="navbar">
             <a href="#profile">About</a>
@@ -233,19 +373,35 @@
         <div class="min-h-screen">
             <header class="p-6 lg:p-10 relative">
                 <div class="max-w-5xl mx-auto" id="contact">
-                    <div class="flex flex-col lg:flex-row items-center lg:items-start gap-8">
+                    <div class="flex flex-col lg:flex-row items-center lg:items-start gap-10">
                         <div class="flex-shrink-0" data-aos="fade-right">
-                            <img src="assets/images/profile2.jpeg" alt="Anushka Satav" class="profile-image">
+                            <div class="orbit-wrap">
+                                <div class="orbit-ring r1"><div class="orbit-dot"></div></div>
+                                <div class="orbit-ring r2"></div>
+                                <img src="assets/images/profile3.jpeg" alt="Anushka Satav" class="profile-image">
+                            </div>
                         </div>
                         <div class="text-center lg:text-left flex-1" data-aos="fade-left">
-                            <h1 class="text-3xl lg:text-4xl font-extrabold text-white mb-3">Anushka Satav G</h1>
+                            <span class="eyebrow">Autonomous Systems &amp; Sensor Fusion</span>
+                            <h1 class="hero-name mt-3 mb-2">Anushka Satav G</h1>
                             <div class="h-8">
-                                <h2 id="typing-role" class="text-xl lg:text-2xl font-semibold" style="color: #00E5FF;"></h2>
+                                <h2 id="typing-role" class="hero-role"></h2>
                             </div>
-                            <p class="mt-4 text-gray-300 leading-relaxed max-w-2xl text-sm">
+                            <p class="mt-5 leading-relaxed max-w-2xl text-sm" style="color:var(--text-muted);">
                                 Passionate robotics engineer advancing mobile robotics, sensor fusion, and autonomous systems through ROS2 development and real-world deployment.
                             </p>
-                            <div class="flex justify-center lg:justify-start gap-3 mt-5">
+
+                            <div class="stat-row mt-6 justify-center lg:justify-start">
+                                <div class="stat"><span class="stat-num">4.0</span><span class="stat-label">GPA · ASU</span></div>
+                                <div class="stat-divider"></div>
+                                <div class="stat"><span class="stat-num">3</span><span class="stat-label">Publications</span></div>
+                                <div class="stat-divider"></div>
+                                <div class="stat"><span class="stat-num">14</span><span class="stat-label">Projects Shipped</span></div>
+                                <div class="stat-divider"></div>
+                                <div class="stat"><span class="stat-num">ICRA</span><span class="stat-label">2025 · Atlanta</span></div>
+                            </div>
+
+                            <div class="flex justify-center lg:justify-start gap-4 mt-6">
                                 <a href="https://linkedin.com/in/anushka-satav-g55555" target="_blank" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
                                 <a href="https://github.com/anushka002" target="_blank" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
                                 <a href="https://scholar.google.com/citations?hl=en&user=Jf1q8iIAAAAJ" target="_blank" class="social-link" title="Google Scholar"><i class="fas fa-graduation-cap"></i></a>
@@ -253,9 +409,9 @@
                                 <a href="mailto:anoushkasatav002@gmail.com" class="social-link" title="Email"><i class="fas fa-envelope"></i></a>
                                 <a href="tel:+16235479249" class="social-link" title="Phone"><i class="fas fa-phone-alt"></i></a>
                             </div>
-                            <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                            <div class="mt-7 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
                                 <a href="mailto:anoushkasatav002@gmail.com" class="btn btn-primary"><i class="fas fa-envelope"></i> Email Me</a>
-                                <a href="assets/Anushka_Satav_Resume_FINAL.pdf" download class="btn btn-primary"><i class="fas fa-download"></i> Download Resume</a>
+                                <a href="assets/Anushka_Satav_Resume_FINAL.pdf" download class="btn btn-secondary"><i class="fas fa-download"></i> Download Resume</a>
                                 <a href="https://anushka002.github.io/anushka-g-satav/" target="_blank" class="btn btn-secondary"><i class="fas fa-palette"></i> Creative Portfolio</a>
                             </div>
                         </div>
@@ -267,9 +423,12 @@
 
                 <!-- About Me -->
                 <section id="profile" class="mb-16" data-aos="fade-up">
-                    <h2 class="section-title">About Me</h2>
+                    <div class="section-head">
+                        <span class="section-eyebrow">01 — Profile</span>
+                        <h2 class="section-title">About Me</h2>
+                    </div>
                     <div class="glass-card">
-                        <p class="text-gray-200 leading-relaxed text-sm">
+                        <p class="leading-relaxed text-sm" style="color:#d4d6d9;">
                             I am a passionate, research-driven robotics engineer committed to solving real-world challenges by advancing autonomous navigation, motion planning, and robot manipulation. My current work focuses on mobile robotics, sensor fusion, state estimation, and ROS2 development, with hands-on experience deploying autonomous behaviors on ground, aerial, and aquatic robots.
                             <br><br>
                             I specialize in implementing Extended Kalman Filters (EKF) for multi-sensor fusion, developing control systems for mobile manipulators, and building perception-driven pipelines using computer vision and LiDAR. My research interests include localization algorithms, Sim2Real transfer, and real-time embedded systems for autonomous robots.
@@ -279,12 +438,15 @@
 
                 <!-- Medium Blogs -->
                 <section id="blogs" class="mb-16">
-                    <h2 class="section-title" data-aos="fade-up">Recent Articles</h2>
+                    <div class="section-head" data-aos="fade-up">
+                        <span class="section-eyebrow">02 — Writing</span>
+                        <h2 class="section-title">Recent Articles</h2>
+                    </div>
                     <div class="glass-card" data-aos="fade-up">
-                        <p class="text-gray-300 text-sm mb-4">I share technical insights on robotics, embedded systems, and autonomous navigation on Medium:</p>
+                        <p class="text-sm mb-4" style="color:var(--text-muted);">I share technical insights on robotics, embedded systems, and autonomous navigation on Medium:</p>
                         <a href="https://medium.com/@anushkasatav07" target="_blank" class="blog-post mb-4">
-                            <h3 class="text-lg font-bold mb-1" style="color: #00E5FF;">Visit My Medium Blog</h3>
-                            <p class="text-gray-300 text-sm">Deep dives into sensor fusion, ROS2, mobile robotics, and practical deployment challenges.</p>
+                            <h3 class="text-lg font-bold mb-1" style="color:#fff; font-family:var(--serif); font-weight:500;">Visit My Medium Blog</h3>
+                            <p class="text-sm" style="color:var(--text-muted);">Deep dives into sensor fusion, ROS2, mobile robotics, and practical deployment challenges.</p>
                         </a>
                         <div class="mt-4">
                             <a href="https://medium.com/@anushkasatav07" target="_blank" class="btn btn-primary"><i class="fab fa-medium"></i> Read All Posts</a>
@@ -294,7 +456,10 @@
 
                 <!-- Engagement -->
                 <section id="engagement" class="mb-16">
-                    <h2 class="section-title" data-aos="fade-up">Engagement & Achievements</h2>
+                    <div class="section-head" data-aos="fade-up">
+                        <span class="section-eyebrow">03 — Recognition</span>
+                        <h2 class="section-title">Engagement &amp; Achievements</h2>
+                    </div>
                     <div class="carousel-container">
                         <button class="carousel-button left" onclick="scrollCarousel('left')"><i class="fas fa-chevron-left"></i></button>
                         <div class="carousel" id="engagement-carousel">
@@ -303,26 +468,26 @@
                             <div class="carousel-item">
                                 <div class="glass-card transition-all duration-300">
                                     <img src="assets/images/nlp_poster.png" alt="NLP Poster" class="engagement-image">
-                                    <h3 class="text-lg font-bold mb-1" style="color: #00E5FF;">NLP Poster Presentation</h3>
-                                    <p class="text-gray-300 text-sm">Presented "Context Engineering VLMs as Interactive Agents" at ASU NLP course showcase.</p>
+                                    <h3 class="text-lg font-bold mb-1" style="color:#fff; font-family:var(--serif); font-weight:500;">NLP Poster Presentation</h3>
+                                    <p class="text-sm" style="color:var(--text-muted);">Presented "Context Engineering VLMs as Interactive Agents" at ASU NLP course showcase.</p>
                                 </div>
                             </div>
 
-                            <!-- 2. ASU Innovation Showcase - correct image is showcase.jpeg -->
+                            <!-- 2. ASU Innovation Showcase -->
                             <div class="carousel-item">
                                 <div class="glass-card transition-all duration-300">
                                     <img src="assets/images/showcase.jpeg" alt="ASU Innovation Showcase" class="engagement-image">
-                                    <h3 class="text-lg font-bold mb-1" style="color: #00E5FF;">ASU Innovation Showcase</h3>
-                                    <p class="text-gray-300 text-sm">Presented "Intelligent Voice-Guided Mobile Manipulator" at ASU's Innovation Showcase for RAS 598.</p>
+                                    <h3 class="text-lg font-bold mb-1" style="color:#fff; font-family:var(--serif); font-weight:500;">ASU Innovation Showcase</h3>
+                                    <p class="text-sm" style="color:var(--text-muted);">Presented "Intelligent Voice-Guided Mobile Manipulator" at ASU's Innovation Showcase for RAS 598.</p>
                                 </div>
                             </div>
 
-                            <!-- 3. ICRA Paper Poster in Atlanta - image is poster_icra.jpeg -->
+                            <!-- 3. ICRA Paper Poster in Atlanta -->
                             <div class="carousel-item">
                                 <div class="glass-card transition-all duration-300">
                                     <img src="assets/images/poster_icra.jpeg" alt="Innovation Showcase" class="engagement-image" style="object-position: top;">
-                                    <h3 class="text-lg font-bold mb-1" style="color: #00E5FF;">ICRA 2025 – Atlanta Poster Display</h3>
-                                    <p class="text-gray-300 text-sm">Displayed ICRA 2025 paper poster "Towards Robotic Trash Removal with Autonomous Surface Vessels" in Atlanta.</p>
+                                    <h3 class="text-lg font-bold mb-1" style="color:#fff; font-family:var(--serif); font-weight:500;">ICRA 2025 – Atlanta Poster Display</h3>
+                                    <p class="text-sm" style="color:var(--text-muted);">Displayed ICRA 2025 paper poster "Towards Robotic Trash Removal with Autonomous Surface Vessels" in Atlanta.</p>
                                 </div>
                             </div>
 
@@ -330,8 +495,8 @@
                             <div class="carousel-item">
                                 <div class="glass-card transition-all duration-300">
                                     <img src="assets/images/winner_hack.jpeg" alt="InnovationHacks 2025" class="engagement-image">
-                                    <h3 class="text-lg font-bold mb-1" style="color: #00E5FF;">InnovationHacks 2025 – 2nd Place</h3>
-                                    <p class="text-gray-300 text-sm">Won 2nd Place ($300) and 1st Prize for "Best Use of MATLAB" at InnovationHacks 2025 as part of Team vAIKings.</p>
+                                    <h3 class="text-lg font-bold mb-1" style="color:#fff; font-family:var(--serif); font-weight:500;">InnovationHacks 2025 – 2nd Place</h3>
+                                    <p class="text-sm" style="color:var(--text-muted);">Won 2nd Place ($300) and 1st Prize for "Best Use of MATLAB" at InnovationHacks 2025 as part of Team vAIKings.</p>
                                 </div>
                             </div>
 
@@ -339,8 +504,8 @@
                             <div class="carousel-item">
                                 <div class="glass-card transition-all duration-300">
                                     <img src="assets/images/srm.jpeg" alt="SRM Biomechanics" class="engagement-image">
-                                    <h3 class="text-lg font-bold mb-1" style="color: #00E5FF;">National Student Exchange – SRM IST</h3>
-                                    <p class="text-gray-300 text-sm">Completed Biomechanics course at SRM IST, Kattankulathur as part of National Student Exchange during Bachelors.</p>
+                                    <h3 class="text-lg font-bold mb-1" style="color:#fff; font-family:var(--serif); font-weight:500;">National Student Exchange – SRM IST</h3>
+                                    <p class="text-sm" style="color:var(--text-muted);">Completed Biomechanics course at SRM IST, Kattankulathur as part of National Student Exchange during Bachelors.</p>
                                 </div>
                             </div>
 
@@ -351,167 +516,173 @@
 
                 <!-- Publications -->
                 <section id="publications" class="mb-16">
-                    <h2 class="section-title" data-aos="fade-up">Publications</h2>
+                    <div class="section-head" data-aos="fade-up">
+                        <span class="section-eyebrow">04 — Research</span>
+                        <h2 class="section-title">Publications</h2>
+                    </div>
                     <div class="space-y-5">
                         <div class="glass-card project-card" data-aos="fade-up">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">Towards Robotic Trash Removal with Autonomous Surface Vessels</h3>
-                            <p class="text-gray-300 text-sm mb-1 flex items-center gap-2"><img src="assets/images/icraieeelogo.png" class="h-4" alt="IEEE"> IEEE ICRA 2025 – "Robots in the Wild" Track</p>
-                            <ul class="list-disc list-inside text-gray-300 text-sm space-y-1 mt-2">
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">Towards Robotic Trash Removal with Autonomous Surface Vessels</h3>
+                            <p class="text-sm mb-1 flex items-center gap-2" style="color:var(--text-muted);"><img src="assets/images/icraieeelogo.png" class="h-4" alt="IEEE"> IEEE ICRA 2025 – "Robots in the Wild" Track</p>
+                            <ul class="list-disc list-inside text-sm space-y-1 mt-2" style="color:var(--text-muted);">
                                 <li>Developed autonomous USV system for trash detection</li>
                                 <li>Integrated YOLOv8 and ROS for decision-making</li>
                             </ul>
-                            <a href="https://drive.google.com/file/d/123bvt_uj2YaDdHav5bmrnwzZ7JTE5sUy/view?usp=drive_link" target="_blank" class="text-sm mt-2 inline-block" style="color: #E040FB;">Read full article →</a>
+                            <a href="https://drive.google.com/file/d/123bvt_uj2YaDdHav5bmrnwzZ7JTE5sUy/view?usp=drive_link" target="_blank" class="text-sm mt-2 inline-block" style="color:var(--brass);">Read full article →</a>
                         </div>
                         <div class="glass-card project-card" data-aos="fade-up">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">A State-of-the-Art Review on Robotics in Waste Sorting</h3>
-                            <p class="text-gray-300 text-sm mb-1">International Journal on Interactive Design and Manufacturing (IJIDeM), May 2023</p>
-                            <a href="https://link.springer.com/article/10.1007/s12008-023-01320-w" target="_blank" class="text-sm mt-2 inline-block" style="color: #E040FB;">Read full article →</a>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">A State-of-the-Art Review on Robotics in Waste Sorting</h3>
+                            <p class="text-sm mb-1" style="color:var(--text-muted);">International Journal on Interactive Design and Manufacturing (IJIDeM), May 2023</p>
+                            <a href="https://link.springer.com/article/10.1007/s12008-023-01320-w" target="_blank" class="text-sm mt-2 inline-block" style="color:var(--brass);">Read full article →</a>
                         </div>
                         <div class="glass-card project-card" data-aos="fade-up">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">Overview of Autonomous Vehicles and its Challenges</h3>
-                            <p class="text-gray-300 text-sm mb-1">Techno-Societal 2022 Conference, December 2022</p>
-                            <a href="https://link.springer.com/chapter/10.1007/978-3-031-34648-4_25" target="_blank" class="text-sm mt-2 inline-block" style="color: #E040FB;">Read full article →</a>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">Overview of Autonomous Vehicles and its Challenges</h3>
+                            <p class="text-sm mb-1" style="color:var(--text-muted);">Techno-Societal 2022 Conference, December 2022</p>
+                            <a href="https://link.springer.com/chapter/10.1007/978-3-031-34648-4_25" target="_blank" class="text-sm mt-2 inline-block" style="color:var(--brass);">Read full article →</a>
                         </div>
                     </div>
                 </section>
 
                 <!-- Projects - ALL 14 -->
                 <section id="projects" class="mb-16">
-                    <h2 class="section-title" data-aos="fade-up">Project Showcase</h2>
+                    <div class="section-head" data-aos="fade-up">
+                        <span class="section-eyebrow">05 — Build Log</span>
+                        <h2 class="section-title">Project Showcase</h2>
+                    </div>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                        <!-- NEW: Sensor Fusion -->
+                        <!-- Sensor Fusion -->
                         <div class="glass-card project-card" data-aos="fade-up">
                             <img src="assets/images/sensor_fusion.gif" alt="Sensor Fusion" class="project-image">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">Sensor Fusion for Mobile Robots (TurtleBot4)</h3>
-                            <p class="text-gray-300 text-sm mb-2">EKF-based state estimation fusing wheel odometry, IMU, and LiDAR in ROS2. Validated under sensor drift and noise conditions.</p>
-                            <p class="text-xs mb-2" style="color: #FFEB3B;">Dec 2024 – Ongoing</p>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">Sensor Fusion for Mobile Robots (TurtleBot4)</h3>
+                            <p class="text-sm mb-2" style="color:var(--text-muted);">EKF-based state estimation fusing wheel odometry, IMU, and LiDAR in ROS2. Validated under sensor drift and noise conditions.</p>
+                            <p class="tag-date mb-2">Dec 2024 – Ongoing</p>
                         </div>
 
-                        <!-- NEW: VLM -->
+                        <!-- VLM -->
                         <div class="glass-card project-card" data-aos="fade-up">
                             <img src="assets/images/vlm_project.jpg" alt="VLM Project" class="project-image">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">Context Engineering VLMs as Interactive Agents</h3>
-                            <p class="text-gray-300 text-sm mb-2">NLP final project. Structured prompts, memory systems, loop detection. Evaluated on Pokémon, Kirby, Mario, Doom II.</p>
-                            <p class="text-xs mb-2" style="color: #FFEB3B;">Jul 2025 – Dec 2025</p>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">Context Engineering VLMs as Interactive Agents</h3>
+                            <p class="text-sm mb-2" style="color:var(--text-muted);">NLP final project. Structured prompts, memory systems, loop detection. Evaluated on Pokémon, Kirby, Mario, Doom II.</p>
+                            <p class="tag-date mb-2">Jul 2025 – Dec 2025</p>
                             <div class="flex gap-3 flex-wrap">
-                                <a href="https://github.com/anushka002/CSE576-NLP-LLMFAO" target="_blank" class="text-sm" style="color: #E040FB;"><i class="fab fa-github"></i> GitHub</a>
-                                <a href="https://lnkd.in/gNNWq7Q6" target="_blank" class="text-sm" style="color: #E040FB;">Slides</a>
+                                <a href="https://github.com/anushka002/CSE576-NLP-LLMFAO" target="_blank" class="text-sm" style="color:var(--brass);"><i class="fab fa-github"></i> GitHub</a>
+                                <a href="https://lnkd.in/gNNWq7Q6" target="_blank" class="text-sm" style="color:var(--brass);">Slides</a>
                             </div>
                         </div>
 
-                        <!-- NEW: PID Control -->
+                        <!-- PID Control -->
                         <div class="glass-card project-card" data-aos="fade-up">
                             <img src="assets/images/pid_control.gif" alt="PID Control" class="project-image">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">Motor Velocity Control using PI/PID Controllers</h3>
-                            <p class="text-gray-300 text-sm mb-2">Mechatronics final project. Arduino-Simulink integration with encoder feedback for real-time DC motor control.</p>
-                            <p class="text-xs mb-2" style="color: #FFEB3B;">Jul 2025 – Dec 2025</p>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">Motor Velocity Control using PI/PID Controllers</h3>
+                            <p class="text-sm mb-2" style="color:var(--text-muted);">Mechatronics final project. Arduino-Simulink integration with encoder feedback for real-time DC motor control.</p>
+                            <p class="tag-date mb-2">Jul 2025 – Dec 2025</p>
                             <div class="flex gap-3 flex-wrap">
-                                <a href="https://github.com/anushka002/RAS550-Mechatronics" target="_blank" class="text-sm" style="color: #E040FB;"><i class="fab fa-github"></i> GitHub</a>
-                                <a href="https://lnkd.in/gQMpt4Aq" target="_blank" class="text-sm" style="color: #E040FB;"><i class="fab fa-youtube"></i> Demo</a>
+                                <a href="https://github.com/anushka002/RAS550-Mechatronics" target="_blank" class="text-sm" style="color:var(--brass);"><i class="fab fa-github"></i> GitHub</a>
+                                <a href="https://lnkd.in/gQMpt4Aq" target="_blank" class="text-sm" style="color:var(--brass);"><i class="fab fa-youtube"></i> Demo</a>
                             </div>
                         </div>
 
-                        <!-- NEW: Keyword Spotting -->
+                        <!-- Keyword Spotting -->
                         <div class="glass-card project-card" data-aos="fade-up">
                             <img src="assets/images/keyword_spotting.png" alt="Keyword Spotting" class="project-image">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">Real-Time Embedded Keyword Spotting</h3>
-                            <p class="text-gray-300 text-sm mb-2">TinyML on Arduino Nano 33 BLE Sense. 95% test accuracy, 74% model size reduction via INT8 quantization.</p>
-                            <p class="text-xs mb-2" style="color: #FFEB3B;">Sept 2025 – Dec 2025</p>
-                            <a href="https://github.com/anushka002/BMI-CES-598-Embedded-Machine-Learning" target="_blank" class="text-sm" style="color: #E040FB;"><i class="fab fa-github"></i> GitHub</a>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">Real-Time Embedded Keyword Spotting</h3>
+                            <p class="text-sm mb-2" style="color:var(--text-muted);">TinyML on Arduino Nano 33 BLE Sense. 95% test accuracy, 74% model size reduction via INT8 quantization.</p>
+                            <p class="tag-date mb-2">Sept 2025 – Dec 2025</p>
+                            <a href="https://github.com/anushka002/BMI-CES-598-Embedded-Machine-Learning" target="_blank" class="text-sm" style="color:var(--brass);"><i class="fab fa-github"></i> GitHub</a>
                         </div>
 
-                        <!-- NEW: Posture Classification -->
+                        <!-- Posture Classification -->
                         <div class="glass-card project-card" data-aos="fade-up">
                             <img src="assets/images/posture_detection.gif" alt="Posture Detection" class="project-image">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">Real-Time Sensor-Agnostic Posture Classification</h3>
-                            <p class="text-gray-300 text-sm mb-2">IMU-based 1D-CNN on Arduino. 92.73% accuracy with windowing, normalization, and sensor fusion.</p>
-                            <p class="text-xs mb-2" style="color: #FFEB3B;">Sept 2025 – Dec 2025</p>
-                            <a href="https://github.com/anushka002/BMI-CES-598-Embedded-Machine-Learning" target="_blank" class="text-sm" style="color: #E040FB;"><i class="fab fa-github"></i> GitHub</a>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">Real-Time Sensor-Agnostic Posture Classification</h3>
+                            <p class="text-sm mb-2" style="color:var(--text-muted);">IMU-based 1D-CNN on Arduino. 92.73% accuracy with windowing, normalization, and sensor fusion.</p>
+                            <p class="tag-date mb-2">Sept 2025 – Dec 2025</p>
+                            <a href="https://github.com/anushka002/BMI-CES-598-Embedded-Machine-Learning" target="_blank" class="text-sm" style="color:var(--brass);"><i class="fab fa-github"></i> GitHub</a>
                         </div>
 
-                        <!-- NEW: Food Classification -->
+                        <!-- Food Classification -->
                         <div class="glass-card project-card" data-aos="fade-up">
                             <img src="assets/images/food_classification.png" alt="Food Classification" class="project-image">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">Food Image Classification using CNNs</h3>
-                            <p class="text-gray-300 text-sm mb-2">ShuffleNet V2 transfer learning. 80.3% accuracy on Food-11 dataset with only ~11K trainable parameters.</p>
-                            <p class="text-xs mb-2" style="color: #FFEB3B;">Sept 2025 – Dec 2025</p>
-                            <a href="https://github.com/anushka002/BMI-CES-598-Embedded-Machine-Learning" target="_blank" class="text-sm" style="color: #E040FB;"><i class="fab fa-github"></i> GitHub</a>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">Food Image Classification using CNNs</h3>
+                            <p class="text-sm mb-2" style="color:var(--text-muted);">ShuffleNet V2 transfer learning. 80.3% accuracy on Food-11 dataset with only ~11K trainable parameters.</p>
+                            <p class="tag-date mb-2">Sept 2025 – Dec 2025</p>
+                            <a href="https://github.com/anushka002/BMI-CES-598-Embedded-Machine-Learning" target="_blank" class="text-sm" style="color:var(--brass);"><i class="fab fa-github"></i> GitHub</a>
                         </div>
 
-                        <!-- ORIGINAL 1: PX4 Drone -->
+                        <!-- PX4 Drone -->
                         <div class="glass-card project-card" data-aos="fade-up">
                             <img src="assets/images/px4_drone.gif" alt="Autonomous Drone" class="project-image">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">Autonomous Drone – Rock Detection, Mapping & Landing</h3>
-                            <p class="text-gray-300 text-sm mb-2">ROS2-based drone in PX4 Gazebo surveying cylindrical rock formations. Boustrophedon search with ArUco marker detection.</p>
-                            <p class="text-xs mb-2" style="color: #FFEB3B;">March 2025 – April 2025</p>
-                            <a href="https://github.com/anushka002/RAS-SES-598-Space-Robotics-and-AI/tree/main/assignments/terrain_mapping_drone_control" target="_blank" class="text-sm" style="color: #E040FB;"><i class="fab fa-github"></i> GitHub</a>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">Autonomous Drone – Rock Detection, Mapping &amp; Landing</h3>
+                            <p class="text-sm mb-2" style="color:var(--text-muted);">ROS2-based drone in PX4 Gazebo surveying cylindrical rock formations. Boustrophedon search with ArUco marker detection.</p>
+                            <p class="tag-date mb-2">March 2025 – April 2025</p>
+                            <a href="https://github.com/anushka002/RAS-SES-598-Space-Robotics-and-AI/tree/main/assignments/terrain_mapping_drone_control" target="_blank" class="text-sm" style="color:var(--brass);"><i class="fab fa-github"></i> GitHub</a>
                         </div>
 
-                        <!-- ORIGINAL 2: Parrot drone2 -->
+                        <!-- Parrot drone2 -->
                         <div class="glass-card project-card" data-aos="fade-up">
                             <img src="assets/images/drone2.gif" alt="Parrot Minidrone Tracking" class="project-image">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">Parrot Minidrone – Autonomous Visual Tracking & Landing</h3>
-                            <p class="text-gray-300 text-sm mb-2">Parrot Mambo tracking a red square on a moving robot and landing accurately using MATLAB Simulink Stateflow.</p>
-                            <p class="text-xs mb-2" style="color: #FFEB3B;">March 2025 – April 2025</p>
-                            <a href="https://github.com/anushka002/parrot_mambo_series/tree/main/FINAL%20PROJECT" target="_blank" class="text-sm" style="color: #E040FB;"><i class="fab fa-github"></i> GitHub</a>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">Parrot Minidrone – Autonomous Visual Tracking &amp; Landing</h3>
+                            <p class="text-sm mb-2" style="color:var(--text-muted);">Parrot Mambo tracking a red square on a moving robot and landing accurately using MATLAB Simulink Stateflow.</p>
+                            <p class="tag-date mb-2">March 2025 – April 2025</p>
+                            <a href="https://github.com/anushka002/parrot_mambo_series/tree/main/FINAL%20PROJECT" target="_blank" class="text-sm" style="color:var(--brass);"><i class="fab fa-github"></i> GitHub</a>
                         </div>
 
-                        <!-- ORIGINAL 3: Parrot drone1 -->
+                        <!-- Parrot drone1 -->
                         <div class="glass-card project-card" data-aos="fade-up">
                             <img src="assets/images/drone1.gif" alt="Parrot Minidrone Line Following" class="project-image">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">Parrot Minidrone – Red Line Following & Precision Landing</h3>
-                            <p class="text-gray-300 text-sm mb-2">Parrot Mambo following a red line and landing on a circular target using image processing in MATLAB Simulink.</p>
-                            <p class="text-xs mb-2" style="color: #FFEB3B;">March 2025 – April 2025</p>
-                            <a href="https://github.com/anushka002/parrot_mambo_series/tree/main/Mini%20Project%203%20Autonomous%20Line%20Following%20and%20Precision%20Landing%20of%20a%20Parrot%20Mambo%20Minidrone%20Using%20Simulink" target="_blank" class="text-sm" style="color: #E040FB;"><i class="fab fa-github"></i> GitHub</a>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">Parrot Minidrone – Red Line Following &amp; Precision Landing</h3>
+                            <p class="text-sm mb-2" style="color:var(--text-muted);">Parrot Mambo following a red line and landing on a circular target using image processing in MATLAB Simulink.</p>
+                            <p class="tag-date mb-2">March 2025 – April 2025</p>
+                            <a href="https://github.com/anushka002/parrot_mambo_series/tree/main/Mini%20Project%203%20Autonomous%20Line%20Following%20and%20Precision%20Landing%20of%20a%20Parrot%20Mambo%20Minidrone%20Using%20Simulink" target="_blank" class="text-sm" style="color:var(--brass);"><i class="fab fa-github"></i> GitHub</a>
                         </div>
 
-                        <!-- ORIGINAL 4: PitchPerfect -->
+                        <!-- PitchPerfect -->
                         <div class="glass-card project-card" data-aos="fade-up">
                             <img src="assets/images/pitchperfect.jpg" alt="PitchPerfect" class="project-image">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">PitchPerfect – Real-Time AI Interview Coach (2nd Prize)</h3>
-                            <p class="text-gray-300 text-sm mb-2">Gradio-based NLP web app for real-time mock interview feedback. Integrated whisper.cpp and Olama. Won hackathon 2nd prize.</p>
-                            <p class="text-xs mb-2" style="color: #FFEB3B;">April 2025</p>
-                            <a href="https://github.com/anushka002/innovation_hackathon" target="_blank" class="text-sm" style="color: #E040FB;"><i class="fab fa-github"></i> GitHub</a>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">PitchPerfect – Real-Time AI Interview Coach (2nd Prize)</h3>
+                            <p class="text-sm mb-2" style="color:var(--text-muted);">Gradio-based NLP web app for real-time mock interview feedback. Integrated whisper.cpp and Olama. Won hackathon 2nd prize.</p>
+                            <p class="tag-date mb-2">April 2025</p>
+                            <a href="https://github.com/anushka002/innovation_hackathon" target="_blank" class="text-sm" style="color:var(--brass);"><i class="fab fa-github"></i> GitHub</a>
                         </div>
 
-                        <!-- ORIGINAL 5: Heron USV -->
+                        <!-- Heron USV -->
                         <div class="glass-card project-card" data-aos="fade-up">
                             <img src="assets/images/heron_gif.gif" alt="Autonomous Surface Vessel" class="project-image">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">Autonomous Surface Vessel – Vision-Guided Trash Detection</h3>
-                            <p class="text-gray-300 text-sm mb-2">Heron USV in ROS-Gazebo with YOLOv8n for trash detection. Co-authored IEEE ICRA 2025 workshop paper.</p>
-                            <p class="text-xs mb-2" style="color: #FFEB3B;">March 2025 – April 2025</p>
-                            <a href="https://github.com/anushka002/UUV-ICRA2025-Heron" target="_blank" class="text-sm" style="color: #E040FB;"><i class="fab fa-github"></i> GitHub</a>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">Autonomous Surface Vessel – Vision-Guided Trash Detection</h3>
+                            <p class="text-sm mb-2" style="color:var(--text-muted);">Heron USV in ROS-Gazebo with YOLOv8n for trash detection. Co-authored IEEE ICRA 2025 workshop paper.</p>
+                            <p class="tag-date mb-2">March 2025 – April 2025</p>
+                            <a href="https://github.com/anushka002/UUV-ICRA2025-Heron" target="_blank" class="text-sm" style="color:var(--brass);"><i class="fab fa-github"></i> GitHub</a>
                         </div>
 
-                        <!-- ORIGINAL 6: TurtleBot4 -->
+                        <!-- TurtleBot4 -->
                         <div class="glass-card project-card" data-aos="fade-up">
                             <img src="assets/images/turtlebot4.gif" alt="TurtleBot4" class="project-image">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">Intelligent TurtleBot4 – Voice-Guided Mobile Manipulator</h3>
-                            <p class="text-gray-300 text-sm mb-2">ROS2 TurtleBot4 with MyCobot arm. Voice commands via Whisper.cpp, YOLOv8 perception, LiDAR/IMU, PyQt5 GUI.</p>
-                            <p class="text-xs mb-2" style="color: #FFEB3B;">January 2025 – April 2025</p>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">Intelligent TurtleBot4 – Voice-Guided Mobile Manipulator</h3>
+                            <p class="text-sm mb-2" style="color:var(--text-muted);">ROS2 TurtleBot4 with MyCobot arm. Voice commands via Whisper.cpp, YOLOv8 perception, LiDAR/IMU, PyQt5 GUI.</p>
+                            <p class="tag-date mb-2">January 2025 – April 2025</p>
                             <div class="flex gap-3 flex-wrap">
-                                <a href="https://github.com/RAS598-2025-S-Team11/RAS598-2025-S-Team11.github.io" target="_blank" class="text-sm" style="color: #E040FB;"><i class="fab fa-github"></i> GitHub</a>
-                                <a href="https://ras598-2025-s-team11.github.io/" target="_blank" class="text-sm" style="color: #E040FB;">🤖 Website</a>
+                                <a href="https://github.com/RAS598-2025-S-Team11/RAS598-2025-S-Team11.github.io" target="_blank" class="text-sm" style="color:var(--brass);"><i class="fab fa-github"></i> GitHub</a>
+                                <a href="https://ras598-2025-s-team11.github.io/" target="_blank" class="text-sm" style="color:var(--brass);">🤖 Website</a>
                             </div>
                         </div>
 
-                        <!-- ORIGINAL 7: MyCobot Maze -->
+                        <!-- MyCobot Maze -->
                         <div class="glass-card project-card" data-aos="fade-up">
                             <img src="assets/images/mycobot.gif" alt="MyCobot Maze" class="project-image">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">Autonomous 4x4 Maze Navigation – MyCobot Pro 600</h3>
-                            <p class="text-gray-300 text-sm mb-2">Computer vision algorithm for MyCobot Pro 600 to autonomously navigate 4x4 mazes, validated in MATLAB simulation.</p>
-                            <p class="text-xs mb-2" style="color: #FFEB3B;">November 2024 – December 2024</p>
-                            <a href="https://github.com/anushka002/maze_solver_with_cobot_pro" target="_blank" class="text-sm" style="color: #E040FB;"><i class="fab fa-github"></i> GitHub</a>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">Autonomous 4x4 Maze Navigation – MyCobot Pro 600</h3>
+                            <p class="text-sm mb-2" style="color:var(--text-muted);">Computer vision algorithm for MyCobot Pro 600 to autonomously navigate 4x4 mazes, validated in MATLAB simulation.</p>
+                            <p class="tag-date mb-2">November 2024 – December 2024</p>
+                            <a href="https://github.com/anushka002/maze_solver_with_cobot_pro" target="_blank" class="text-sm" style="color:var(--brass);"><i class="fab fa-github"></i> GitHub</a>
                         </div>
 
-                        <!-- ORIGINAL 8: Robotic Arm -->
+                        <!-- Robotic Arm -->
                         <div class="glass-card project-card" data-aos="fade-up">
                             <img src="assets/images/robotarm.gif" alt="Robotic Arm" class="project-image">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">B.Tech Final: Robotic Arm for Waste Sorting</h3>
-                            <p class="text-gray-300 text-sm mb-2">4-DOF robotic arm with vacuum gripper using YOLOv7 for waste classification into recyclable categories. 200g payload.</p>
-                            <p class="text-xs mb-2" style="color: #FFEB3B;">September 2022 – November 2022</p>
-                            <a href="https://github.com/anushka002/robotic_arm_waste_sorting" target="_blank" class="text-sm" style="color: #E040FB;"><i class="fab fa-github"></i> GitHub</a>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">B.Tech Final: Robotic Arm for Waste Sorting</h3>
+                            <p class="text-sm mb-2" style="color:var(--text-muted);">4-DOF robotic arm with vacuum gripper using YOLOv7 for waste classification into recyclable categories. 200g payload.</p>
+                            <p class="tag-date mb-2">September 2022 – November 2022</p>
+                            <a href="https://github.com/anushka002/robotic_arm_waste_sorting" target="_blank" class="text-sm" style="color:var(--brass);"><i class="fab fa-github"></i> GitHub</a>
                         </div>
 
                     </div>
@@ -519,17 +690,20 @@
 
                 <!-- Experience -->
                 <section id="experience" class="mb-16">
-                    <h2 class="section-title" data-aos="fade-up">Professional Experience</h2>
+                    <div class="section-head" data-aos="fade-up">
+                        <span class="section-eyebrow">06 — Track Record</span>
+                        <h2 class="section-title">Professional Experience</h2>
+                    </div>
                     <div class="space-y-5">
                         <div class="glass-card project-card" data-aos="fade-up">
                             <div class="flex justify-between items-start mb-3 flex-wrap gap-2">
                                 <div>
-                                    <h3 class="text-base font-bold" style="color: #00E5FF;">Research Volunteer</h3>
-                                    <p class="text-gray-300 text-sm font-medium">Robotics Systems & Dynamics Group Lab, Arizona State University</p>
+                                    <h3 class="text-base font-bold" style="color:#fff;">Research Volunteer</h3>
+                                    <p class="text-sm font-medium" style="color:var(--text-muted);">Robotics Systems &amp; Dynamics Group Lab, Arizona State University</p>
                                 </div>
-                                <span class="text-xs font-medium px-3 py-1 rounded-full" style="background: rgba(0,229,255,0.1); color: #00E5FF;">Dec 2024 – Present</span>
+                                <span class="tag-date px-3 py-1 rounded-full" style="border:1px solid var(--border-brass);">Dec 2024 – Present</span>
                             </div>
-                            <ul class="list-disc list-inside text-gray-300 space-y-1 text-sm">
+                            <ul class="list-disc list-inside space-y-1 text-sm" style="color:var(--text-muted);">
                                 <li>Designed and implemented EKF-based state estimation fusing wheel odometry, IMU, and LiDAR in ROS2</li>
                                 <li>Derived nonlinear motion and measurement models; validated covariance propagation and noise modeling</li>
                                 <li>Evaluated robustness under sensor drift, noise, and different motion conditions</li>
@@ -538,12 +712,12 @@
                         <div class="glass-card project-card" data-aos="fade-up">
                             <div class="flex justify-between items-start mb-3 flex-wrap gap-2">
                                 <div>
-                                    <h3 class="text-base font-bold" style="color: #00E5FF;">Research Volunteer</h3>
-                                    <p class="text-gray-300 text-sm font-medium">AAIR Lab, Arizona State University</p>
+                                    <h3 class="text-base font-bold" style="color:#fff;">Research Volunteer</h3>
+                                    <p class="text-sm font-medium" style="color:var(--text-muted);">AAIR Lab, Arizona State University</p>
                                 </div>
-                                <span class="text-xs font-medium px-3 py-1 rounded-full" style="background: rgba(0,229,255,0.1); color: #00E5FF;">Jan 2025 – Aug 2025</span>
+                                <span class="tag-date px-3 py-1 rounded-full" style="border:1px solid var(--border-brass);">Jan 2025 – Aug 2025</span>
                             </div>
-                            <ul class="list-disc list-inside text-gray-300 space-y-1 text-sm">
+                            <ul class="list-disc list-inside space-y-1 text-sm" style="color:var(--text-muted);">
                                 <li>Explored robot motion planning pipelines in ROS and Gazebo</li>
                                 <li>Executed MoveIt-based control tasks for manipulation</li>
                             </ul>
@@ -551,12 +725,12 @@
                         <div class="glass-card project-card" data-aos="fade-up">
                             <div class="flex justify-between items-start mb-3 flex-wrap gap-2">
                                 <div>
-                                    <h3 class="text-base font-bold" style="color: #00E5FF;">Robotics Engineering Intern</h3>
-                                    <p class="text-gray-300 text-sm font-medium">Void Robotics (Remote)</p>
+                                    <h3 class="text-base font-bold" style="color:#fff;">Robotics Engineering Intern</h3>
+                                    <p class="text-sm font-medium" style="color:var(--text-muted);">Void Robotics (Remote)</p>
                                 </div>
-                                <span class="text-xs font-medium px-3 py-1 rounded-full" style="background: rgba(0,229,255,0.1); color: #00E5FF;">May 2023 – Nov 2023</span>
+                                <span class="tag-date px-3 py-1 rounded-full" style="border:1px solid var(--border-brass);">May 2023 – Nov 2023</span>
                             </div>
-                            <ul class="list-disc list-inside text-gray-300 space-y-1 text-sm">
+                            <ul class="list-disc list-inside space-y-1 text-sm" style="color:var(--text-muted);">
                                 <li>Tackled robotics tasks with Arduino libraries and Nav2 for autonomous navigation</li>
                                 <li>Debugged and wrote reliable code for ROS2 development</li>
                                 <li>Studied ROS2 advanced, Git/GitHub from scratch, operated Linux confidently</li>
@@ -565,14 +739,14 @@
                         <div class="glass-card project-card" data-aos="fade-up">
                             <div class="flex justify-between items-start mb-3 flex-wrap gap-2">
                                 <div>
-                                    <h3 class="text-base font-bold" style="color: #00E5FF;">R&D Intern</h3>
-                                    <p class="text-gray-300 text-sm font-medium flex items-center gap-2">
+                                    <h3 class="text-base font-bold" style="color:#fff;">R&amp;D Intern</h3>
+                                    <p class="text-sm font-medium flex items-center gap-2" style="color:var(--text-muted);">
                                         Hexagon Manufacturing Intelligence <img src="assets/images/hexagon.png" class="h-4" alt="Hexagon">
                                     </p>
                                 </div>
-                                <span class="text-xs font-medium px-3 py-1 rounded-full" style="background: rgba(0,229,255,0.1); color: #00E5FF;">Feb 2023 – Sep 2023</span>
+                                <span class="tag-date px-3 py-1 rounded-full" style="border:1px solid var(--border-brass);">Feb 2023 – Sep 2023</span>
                             </div>
-                            <ul class="list-disc list-inside text-gray-300 space-y-1 text-sm">
+                            <ul class="list-disc list-inside space-y-1 text-sm" style="color:var(--text-muted);">
                                 <li>FEA simulations on 10 models using MSC Apex, Nastran, and Dytran</li>
                                 <li>Automated model building reducing creation time by 90% (20 min → under 2 min)</li>
                             </ul>
@@ -582,87 +756,93 @@
 
                 <!-- Education -->
                 <section id="education" class="mb-16">
-                    <h2 class="section-title" data-aos="fade-up">Education</h2>
+                    <div class="section-head" data-aos="fade-up">
+                        <span class="section-eyebrow">07 — Foundation</span>
+                        <h2 class="section-title">Education</h2>
+                    </div>
                     <div class="space-y-5">
                         <div class="glass-card project-card" data-aos="fade-right">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">Masters in Robotics and Autonomous Systems (AI)</h3>
-                            <p class="text-gray-300 font-medium text-sm">Arizona State University</p>
-                            <p class="font-medium mt-2 text-sm" style="color: #FFEB3B;">CGPA: 4.0/4.0 | NAMU Scholar ($10k)</p>
-                            <p class="text-gray-300 text-sm mt-1"><b>Courses:</b> AI, Robotic Systems I & II, NLP, Mechatronics, Embedded ML, Space Robotics & AI</p>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">Masters in Robotics and Autonomous Systems (AI)</h3>
+                            <p class="font-medium text-sm" style="color:var(--text-muted);">Arizona State University</p>
+                            <p class="font-medium mt-2 tag-date">CGPA: 4.0/4.0 | NAMU Scholar ($10k)</p>
+                            <p class="text-sm mt-2" style="color:var(--text-muted);"><b style="color:#d4d6d9;">Courses:</b> AI, Robotic Systems I &amp; II, NLP, Mechatronics, Embedded ML, Space Robotics &amp; AI</p>
                         </div>
                         <div class="glass-card project-card" data-aos="fade-right">
-                            <h3 class="text-base font-bold mb-1" style="color: #00E5FF;">B.Tech in Robotics and Automation</h3>
-                            <p class="text-gray-300 font-medium text-sm">MIT World Peace University</p>
-                            <p class="font-medium mt-2 text-sm" style="color: #FFEB3B;">CGPA: 9.7/10 | Silver Medalist</p>
+                            <h3 class="text-base font-bold mb-1" style="color:#fff;">B.Tech in Robotics and Automation</h3>
+                            <p class="font-medium text-sm" style="color:var(--text-muted);">MIT World Peace University</p>
+                            <p class="font-medium mt-2 tag-date">CGPA: 9.7/10 | Silver Medalist</p>
                         </div>
                     </div>
                 </section>
 
                 <!-- Timeline -->
                 <section id="timeline" class="mb-16">
-                    <h2 class="section-title text-center" data-aos="fade-up">My Journey</h2>
+                    <div class="section-head text-center" data-aos="fade-up" style="display:flex; flex-direction:column; align-items:center;">
+                        <span class="section-eyebrow">08 — Trajectory</span>
+                        <h2 class="section-title">My Journey</h2>
+                    </div>
                     <div class="timeline">
                         <div class="timeline-item left" data-aos="fade-right">
                             <div class="timeline-content">
-                                <h3 class="text-sm font-bold" style="color: #00E5FF;">Publication: Robotic Trash Removal</h3>
-                                <p class="text-xs font-medium mt-1" style="color: #FFEB3B;">May 2025</p>
-                                <p class="text-xs mt-1 text-gray-300">Published at IEEE ICRA 2025. Poster displayed in Atlanta.</p>
+                                <h3 class="text-sm font-bold" style="color:#fff;">Publication: Robotic Trash Removal</h3>
+                                <p class="tag-date mt-1">May 2025</p>
+                                <p class="text-xs mt-1" style="color:var(--text-muted);">Published at IEEE ICRA 2025. Poster displayed in Atlanta.</p>
                             </div>
                             <div class="timeline-marker"></div>
                         </div>
                         <div class="timeline-item right" data-aos="fade-left">
                             <div class="timeline-content">
-                                <h3 class="text-sm font-bold" style="color: #00E5FF;">Research – Sensor Fusion Lab</h3>
-                                <p class="text-xs font-medium mt-1" style="color: #FFEB3B;">Dec 2024 – Present</p>
-                                <p class="text-xs mt-1 text-gray-300">EKF multi-sensor fusion at ASU Robotics Systems & Dynamics Lab.</p>
+                                <h3 class="text-sm font-bold" style="color:#fff;">Research – Sensor Fusion Lab</h3>
+                                <p class="tag-date mt-1">Dec 2024 – Present</p>
+                                <p class="text-xs mt-1" style="color:var(--text-muted);">EKF multi-sensor fusion at ASU Robotics Systems &amp; Dynamics Lab.</p>
                             </div>
                             <div class="timeline-marker"></div>
                         </div>
                         <div class="timeline-item left" data-aos="fade-right">
                             <div class="timeline-content">
-                                <h3 class="text-sm font-bold" style="color: #00E5FF;">Masters at ASU</h3>
-                                <p class="text-xs font-medium mt-1" style="color: #FFEB3B;">August 2024</p>
-                                <p class="text-xs mt-1 text-gray-300">Started with 4.0/4.0 GPA. NAMU Scholar.</p>
+                                <h3 class="text-sm font-bold" style="color:#fff;">Masters at ASU</h3>
+                                <p class="tag-date mt-1">August 2024</p>
+                                <p class="text-xs mt-1" style="color:var(--text-muted);">Started with 4.0/4.0 GPA. NAMU Scholar.</p>
                             </div>
                             <div class="timeline-marker"></div>
                         </div>
                         <div class="timeline-item right" data-aos="fade-left">
                             <div class="timeline-content">
-                                <h3 class="text-sm font-bold" style="color: #00E5FF;">Void Robotics Intern</h3>
-                                <p class="text-xs font-medium mt-1" style="color: #FFEB3B;">May 2023 – Nov 2023</p>
-                                <p class="text-xs mt-1 text-gray-300">Autonomous navigation and ROS2 development.</p>
+                                <h3 class="text-sm font-bold" style="color:#fff;">Void Robotics Intern</h3>
+                                <p class="tag-date mt-1">May 2023 – Nov 2023</p>
+                                <p class="text-xs mt-1" style="color:var(--text-muted);">Autonomous navigation and ROS2 development.</p>
                             </div>
                             <div class="timeline-marker"></div>
                         </div>
                         <div class="timeline-item left" data-aos="fade-right">
                             <div class="timeline-content">
-                                <h3 class="text-sm font-bold" style="color: #00E5FF;">Publication: Waste Sorting Review</h3>
-                                <p class="text-xs font-medium mt-1" style="color: #FFEB3B;">May 2023</p>
-                                <p class="text-xs mt-1 text-gray-300">Published in IJIDeM (Q2 journal).</p>
+                                <h3 class="text-sm font-bold" style="color:#fff;">Publication: Waste Sorting Review</h3>
+                                <p class="tag-date mt-1">May 2023</p>
+                                <p class="text-xs mt-1" style="color:var(--text-muted);">Published in IJIDeM (Q2 journal).</p>
                             </div>
                             <div class="timeline-marker"></div>
                         </div>
                         <div class="timeline-item right" data-aos="fade-left">
                             <div class="timeline-content">
-                                <h3 class="text-sm font-bold" style="color: #00E5FF;">Hexagon R&D Intern</h3>
-                                <p class="text-xs font-medium mt-1" style="color: #FFEB3B;">Feb 2023 – Sep 2023</p>
-                                <p class="text-xs mt-1 text-gray-300">FEA automation, 90% time reduction.</p>
+                                <h3 class="text-sm font-bold" style="color:#fff;">Hexagon R&amp;D Intern</h3>
+                                <p class="tag-date mt-1">Feb 2023 – Sep 2023</p>
+                                <p class="text-xs mt-1" style="color:var(--text-muted);">FEA automation, 90% time reduction.</p>
                             </div>
                             <div class="timeline-marker"></div>
                         </div>
                         <div class="timeline-item left" data-aos="fade-right">
                             <div class="timeline-content">
-                                <h3 class="text-sm font-bold" style="color: #00E5FF;">Publication: Autonomous Vehicles</h3>
-                                <p class="text-xs font-medium mt-1" style="color: #FFEB3B;">December 2022</p>
-                                <p class="text-xs mt-1 text-gray-300">Techno-Societal 2022 Conference.</p>
+                                <h3 class="text-sm font-bold" style="color:#fff;">Publication: Autonomous Vehicles</h3>
+                                <p class="tag-date mt-1">December 2022</p>
+                                <p class="text-xs mt-1" style="color:var(--text-muted);">Techno-Societal 2022 Conference.</p>
                             </div>
                             <div class="timeline-marker"></div>
                         </div>
                         <div class="timeline-item right" data-aos="fade-left">
                             <div class="timeline-content">
-                                <h3 class="text-sm font-bold" style="color: #00E5FF;">B.Tech Graduation</h3>
-                                <p class="text-xs font-medium mt-1" style="color: #FFEB3B;">August 2019</p>
-                                <p class="text-xs mt-1 text-gray-300">9.7/10 CGPA, Silver Medalist, MIT WPU.</p>
+                                <h3 class="text-sm font-bold" style="color:#fff;">B.Tech Graduation</h3>
+                                <p class="tag-date mt-1">August 2019</p>
+                                <p class="text-xs mt-1" style="color:var(--text-muted);">9.7/10 CGPA, Silver Medalist, MIT WPU.</p>
                             </div>
                             <div class="timeline-marker"></div>
                         </div>
@@ -670,8 +850,8 @@
                 </section>
 
                 <footer class="text-center mt-16" data-aos="fade-up">
-                    <p class="text-gray-400 text-sm">Designed & Built by Anushka Satav G</p>
-                    <p class="text-gray-500 text-xs mt-1">© 2026 All Rights Reserved.</p>
+                    <p class="text-sm" style="color:var(--text-faint);">Designed &amp; Built by Anushka Satav G</p>
+                    <p class="text-xs mt-1" style="color:var(--text-faint); opacity:0.6;">© 2026 All Rights Reserved.</p>
                 </footer>
             </main>
         </div>
